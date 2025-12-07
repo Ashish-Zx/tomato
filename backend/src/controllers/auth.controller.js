@@ -37,7 +37,11 @@ async function registerUser(req, res) {
       },
     });
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    console.error("User Register Error:", error);
+    res.status(500).json({
+      message: "Internal server error",
+      error: error.message
+    });
   }
 }
 async function loginUser(req, res) {
@@ -66,7 +70,11 @@ async function loginUser(req, res) {
       },
     });
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    console.error("User Login Error:", error);
+    res.status(500).json({
+      message: "Internal server error",
+      error: error.message
+    });
   }
 }
 async function logoutUser(req, res) {
@@ -158,7 +166,11 @@ async function loginFoodPartner(req, res) {
       },
     });
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Partner Login Error:", error);
+    res.status(500).json({
+      message: "Internal server error",
+      error: error.message
+    });
   }
 }
 
