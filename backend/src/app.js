@@ -7,9 +7,28 @@ const foodPartnerRoutes = require("./routes/food-partner.routes");
 const userRoutes = require("./routes/user.routes");
 const cors = require("cors");
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://tomato-frontend.vercel.app",
+  "https://tomato-bc76.vercel.app",  // Allow backend to frontend
+  /\.vercel\.app$/  // Allow any Vercel domain
+];
+
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: function (origin, callback) {
+      // allow requests with no origin (mobile apps, curl, etc)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.some(allowed => {
+        if (allowed instanceof RegExp) return allowed.test(origin);
+        return allowed === origin;
+      })) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
   })
 );
