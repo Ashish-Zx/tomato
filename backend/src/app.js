@@ -18,17 +18,17 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: function (origin, callback) {
-      // allow requests with no origin (mobile apps, curl, etc)
+      // Allow requests with no origin (mobile apps, curl, Postman, etc)
       if (!origin) return callback(null, true);
 
-      if (allowedOrigins.some(allowed => {
-        if (allowed instanceof RegExp) return allowed.test(origin);
-        return allowed === origin;
-      })) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
+      // Allow localhost for development
+      if (origin.includes('localhost')) return callback(null, true);
+
+      // Allow all vercel.app domains
+      if (origin.includes('vercel.app')) return callback(null, true);
+
+      // Allow any other origin (can be restricted later)
+      callback(null, true);
     },
     credentials: true,
   })
