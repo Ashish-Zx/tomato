@@ -1,18 +1,25 @@
-// Initialize DB connection
+// Debugging startup crash
+let stage = "init";
 try {
-    const app = require("../src/app");
+    stage = "loading_db_module";
     const connectDB = require("../src/db/db");
 
+    stage = "loading_app_module";
+    const app = require("../src/app");
+
+    stage = "connecting_db";
     connectDB();
+
     module.exports = app;
 } catch (error) {
-    console.error("CRITICAL ERROR STARTING APP:", error);
-    // Return a fallback error handler so Vercel doesn't crash 500 without logs
+    console.error(`CRITICAL ERROR AT STAGE: ${stage}`, error);
     module.exports = (req, res) => {
         res.status(500).json({
-            message: "Critical Backend Startup Error",
+            message: "Backend Startup Crash",
+            failed_stage: stage,
             error: error.message,
-            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+            code: error.code,
+            stack: error.stack
         });
     };
 }
