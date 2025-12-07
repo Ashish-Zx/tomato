@@ -9,8 +9,9 @@ const cors = require("cors");
 
 const allowedOrigins = [
   "http://localhost:5173",
+  "https://tomato-fe-murex.vercel.app",  // Production frontend
   "https://tomato-frontend.vercel.app",
-  "https://tomato-bc76.vercel.app",  // Allow backend to frontend
+  "https://tomato-bc76.vercel.app",
   /\.vercel\.app$/  // Allow any Vercel domain
 ];
 
