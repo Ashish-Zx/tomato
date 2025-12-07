@@ -3,13 +3,22 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
-let connectDB = async () => {
+let isConnected = false;
+
+const connectDB = async () => {
+  if (isConnected) {
+    console.log("Using existing MongoDB connection");
+    return;
+  }
+
   try {
-    await mongoose.connect(process.env.MONGO_URI);
+    const { connection } = await mongoose.connect(process.env.MONGO_URI);
+    isConnected = true;
     console.log("Connected to MongoDB");
   } catch (error) {
     console.error("Error connecting to MongoDB:", error);
-    process.exit(1);
+    // Don't exit process in serverless, just throw
+    throw error;
   }
 };
 
