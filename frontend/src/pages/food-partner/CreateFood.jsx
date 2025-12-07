@@ -19,7 +19,7 @@ const CreateFood = () => {
     useEffect(() => {
         const checkAuth = async () => {
             try {
-                await axios.get('http://localhost:8000/api/auth/foodpartner/profile', {
+                await axios.get(import.meta.env.VITE_API_URL + '/api/auth/foodpartner/profile', {
                     withCredentials: true
                 });
                 // If successful, user is authenticated
@@ -67,7 +67,7 @@ const CreateFood = () => {
         data.append('price', formData.price);
 
         try {
-            await axios.post('http://localhost:8000/api/food', data, {
+            await axios.post(import.meta.env.VITE_API_URL + '/api/food', data, {
                 withCredentials: true,
                 headers: {
                     'Content-Type': 'multipart/form-data'

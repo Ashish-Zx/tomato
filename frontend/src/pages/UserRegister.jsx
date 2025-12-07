@@ -25,7 +25,7 @@ const UserRegister = () => {
         e.preventDefault()
         const { firstName, lastName, email, password } = formData
         try {
-            await axios.post('http://localhost:8000/api/auth/user/register', {
+            await axios.post(import.meta.env.VITE_API_URL + '/api/auth/user/register', {
                 fullName: `${firstName} ${lastName}`.trim(),
                 email,
                 password,

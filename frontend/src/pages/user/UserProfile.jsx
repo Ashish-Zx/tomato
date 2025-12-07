@@ -23,9 +23,9 @@ const UserProfile = () => {
     const fetchUserData = async () => {
         try {
             const [profileRes, savedRes, likedRes] = await Promise.all([
-                axios.get('http://localhost:8000/api/user/profile', { withCredentials: true }),
-                axios.get('http://localhost:8000/api/user/saved', { withCredentials: true }),
-                axios.get('http://localhost:8000/api/user/liked', { withCredentials: true })
+                axios.get(import.meta.env.VITE_API_URL + '/api/user/profile', { withCredentials: true }),
+                axios.get(import.meta.env.VITE_API_URL + '/api/user/saved', { withCredentials: true }),
+                axios.get(import.meta.env.VITE_API_URL + '/api/user/liked', { withCredentials: true })
             ]);
 
             setUser(profileRes.data.user);
@@ -46,7 +46,7 @@ const UserProfile = () => {
     const handleUpdateProfile = async (e) => {
         e.preventDefault();
         try {
-            await axios.put('http://localhost:8000/api/user/profile', editForm, {
+            await axios.put(import.meta.env.VITE_API_URL + '/api/user/profile', editForm, {
                 withCredentials: true
             });
             setUser(prev => ({ ...prev, ...editForm }));

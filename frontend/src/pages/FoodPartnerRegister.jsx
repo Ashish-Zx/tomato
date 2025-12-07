@@ -28,7 +28,7 @@ function FoodPartnerRegister() {
         const { name, email, password, contactName, phone, address } = formData
 
         try {
-            const response = await axios.post('http://localhost:8000/api/auth/foodpartner/register', {
+            const response = await axios.post(import.meta.env.VITE_API_URL + '/api/auth/foodpartner/register', {
                 name,
                 email,
                 password,

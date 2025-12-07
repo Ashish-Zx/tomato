@@ -16,13 +16,13 @@ const Dashboard = () => {
         const fetchData = async () => {
             try {
                 // Fetch partner profile
-                const profileRes = await axios.get('http://localhost:8000/api/auth/foodpartner/profile', {
+                const profileRes = await axios.get(import.meta.env.VITE_API_URL + '/api/auth/foodpartner/profile', {
                     withCredentials: true
                 });
                 setPartner(profileRes.data.foodPartner);
 
                 // Fetch partner's food items (use 'id' not '_id')
-                const foodsRes = await axios.get(`http://localhost:8000/api/food/partner/${profileRes.data.foodPartner.id}`, {
+                const foodsRes = await axios.get(`https://tomato-bc76.vercel.app/api/food/partner/${profileRes.data.foodPartner.id}`, {
                     withCredentials: true
                 });
                 setFoods(foodsRes.data.foods || []);
@@ -52,7 +52,7 @@ const Dashboard = () => {
         }
 
         try {
-            await axios.delete(`http://localhost:8000/api/food/${foodId}`, {
+            await axios.delete(`https://tomato-bc76.vercel.app/api/food/${foodId}`, {
                 withCredentials: true
             });
             

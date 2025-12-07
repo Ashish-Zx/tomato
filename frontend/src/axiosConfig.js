@@ -1,14 +1,21 @@
 import axios from 'axios';
+import { API_URL } from './config/api';
 
-// Add a request interceptor to include the token
-axios.interceptors.request.use(
+const axiosInstance = axios.create({
+    baseURL: API_URL,
+    withCredentials: true
+});
+
+// Request interceptor to add JWT token
+axiosInstance.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token');
-        console.log('Axios interceptor - Token from localStorage:', token ? 'EXISTS' : 'NOT FOUND');
+        console.log('Axios interceptor - Token from localStorage:', token ? 'FOUND' : 'NOT FOUND');
+
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
-            console.log('Added Authorization header');
         }
+
         return config;
     },
     (error) => {
@@ -16,4 +23,4 @@ axios.interceptors.request.use(
     }
 );
 
-export default axios;
+export default axiosInstance;

@@ -37,7 +37,7 @@ function Home() {
     const handleLike = async (foodId, e) => {
         e.stopPropagation();
         try {
-            const response = await axios.post(`http://localhost:8000/api/user/like/${foodId}`, {}, {
+            const response = await axios.post(`https://tomato-bc76.vercel.app/api/user/like/${foodId}`, {}, {
                 withCredentials: true
             });
             setLikedVideos(prev => ({
@@ -52,7 +52,7 @@ function Home() {
     const handleSave = async (foodId, e) => {
         e.stopPropagation();
         try {
-            const response = await axios.post(`http://localhost:8000/api/user/save/${foodId}`, {}, {
+            const response = await axios.post(`https://tomato-bc76.vercel.app/api/user/save/${foodId}`, {}, {
                 withCredentials: true
             });
             setSavedVideos(prev => ({
@@ -124,7 +124,7 @@ function Home() {
     }, [isMuted]);
 
     useEffect(() => {
-        axios.get('http://localhost:8000/api/food', {
+        axios.get(import.meta.env.VITE_API_URL + '/api/food', {
             withCredentials: true
         })
             .then(response => {

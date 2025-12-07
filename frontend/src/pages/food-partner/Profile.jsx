@@ -14,7 +14,7 @@ const Profile = () => {
 
     useEffect(() => {
         // Fetch food partner profile
-        axios.get(`http://localhost:8000/api/foodpartner/${id}`)
+        axios.get(`https://tomato-bc76.vercel.app/api/foodpartner/${id}`)
             .then(response => {
                 setProfile(response.data.foodPartner);
             })
@@ -23,7 +23,7 @@ const Profile = () => {
             });
 
         // Fetch food partner's videos
-        axios.get(`http://localhost:8000/api/food/partner/${id}`, {
+        axios.get(`https://tomato-bc76.vercel.app/api/food/partner/${id}`, {
             withCredentials: true
         })
             .then(response => {
