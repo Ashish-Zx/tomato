@@ -28,6 +28,18 @@ app.use((err, req, res, next) => {
   });
 });
 
+// Health Check Route
+app.get("/", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    message: "Tomato Backend is running",
+    env_check: {
+      mongo_defined: !!process.env.MONGO_URI,
+      jwt_defined: !!process.env.JWT_SECRET
+    }
+  });
+});
+
 app.use("/api/auth", authRoutes);
 app.use("/api/food", foodAuthRoutes);
 app.use("/api/foodpartner", foodPartnerRoutes);
