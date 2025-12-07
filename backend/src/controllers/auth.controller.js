@@ -113,7 +113,12 @@ async function registerFoodPartner(req, res) {
       },
     });
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Registration Error:", error);
+    res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 }
 

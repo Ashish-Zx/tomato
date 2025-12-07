@@ -29,10 +29,15 @@ app.use((err, req, res, next) => {
 });
 
 // Health Check Route
+const mongoose = require('mongoose');
 app.get("/", (req, res) => {
+  const dbState = mongoose.connection.readyState;
+  const states = { 0: "disconnected", 1: "connected", 2: "connecting", 3: "disconnecting" };
+
   res.status(200).json({
     status: "ok",
     message: "Tomato Backend is running",
+    db_status: states[dbState] || "unknown",
     env_check: {
       mongo_defined: !!process.env.MONGO_URI,
       jwt_defined: !!process.env.JWT_SECRET
