@@ -22,15 +22,17 @@ function UserLogin() {
         e.preventDefault()
         const { email, password } = formData
         try {
-            await axios.post(
+            const response = await axios.post(
                 import.meta.env.VITE_API_URL + '/api/auth/user/login',
                 { email, password },
                 { withCredentials: true }
             )
+            localStorage.setItem('token', response.data.token);
             console.log(`User ${email} logged in successfully`)
-            navigate('/')
-        } catch (err) {
-            console.error('Login failed', err)
+            // Redirect to home feed
+            navigate('/home');
+        } catch (error) {
+            console.error('Login failed', error)
         }
     }
 

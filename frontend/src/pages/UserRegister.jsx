@@ -24,15 +24,17 @@ const UserRegister = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         const { firstName, lastName, email, password } = formData
+        const fullName = `${firstName} ${lastName}`.trim();
         try {
-            await axios.post(import.meta.env.VITE_API_URL + '/api/auth/user/register', {
-                fullName: `${firstName} ${lastName}`.trim(),
+            const response = await axios.post(import.meta.env.VITE_API_URL + '/api/auth/user/register', {
+                fullName,
                 email,
                 password,
             }, { withCredentials: true });
-            console.log(`User ${email} registered successfully`);
+            localStorage.setItem('token', response.data.token);
+            console.log(`User ${fullName} registered successfully`);
 
-            navigate('/')
+            navigate('/home')
         } catch (err) {
             console.error('Registration failed', err)
         }

@@ -74,7 +74,7 @@ const UserProfile = () => {
         <div className="user-profile-container">
             {/* Header */}
             <div className="user-profile-header">
-                <button className="back-btn" onClick={() => navigate('/')}>
+                <button className="back-btn" onClick={() => navigate('/home')}>
                     ← Back to Feed
                 </button>
                 <h1>My Profile</h1>
@@ -154,7 +154,7 @@ const UserProfile = () => {
                 {currentVideos.length === 0 ? (
                     <div className="empty-state">
                         <p>No {activeTab} videos yet</p>
-                        <button className="browse-btn" onClick={() => navigate('/')}>
+                        <button className="browse-btn" onClick={() => navigate('/home')}>
                             Browse Food
                         </button>
                     </div>
