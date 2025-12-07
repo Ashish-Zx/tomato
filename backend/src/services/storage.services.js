@@ -2,13 +2,27 @@ const Imagekit = require("imagekit");
 const dotenv = require("dotenv");
 dotenv.config();
 
-const imagekit = new Imagekit({
-  publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
-  privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
-  urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT,
-});
+let imagekit;
+
+try {
+  if (process.env.IMAGEKIT_PUBLIC_KEY) {
+    imagekit = new Imagekit({
+      publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
+      privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
+      urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT,
+    });
+  } else {
+    console.warn("ImageKit keys missing in environment variables");
+  }
+} catch (error) {
+  console.error("Error initializing ImageKit:", error);
+}
 
 async function uploadFileToImageKit(file, fileName) {
+  if (!imagekit) {
+    throw new Error("ImageKit not initialized (check env vars)");
+  }
+
   // Convert buffer to base64 string for ImageKit
   const base64File = file.toString('base64');
 
