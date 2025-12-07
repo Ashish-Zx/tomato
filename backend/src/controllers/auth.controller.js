@@ -3,6 +3,7 @@ const FoodPartnerModel = require("../models/foodpartner.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
+const mongoose = require("mongoose");
 
 dotenv.config();
 
@@ -78,6 +79,11 @@ async function registerFoodPartner(req, res) {
     const { name, email, password, contactName, phone, address } = req.body;
 
     // Check if food partner already exists
+    if (mongoose.connection.readyState === 0) {
+      const connectDB = require("../db/db");
+      await connectDB();
+    }
+
     const existingPartner = await FoodPartnerModel.findOne({ email });
     if (existingPartner) {
       return res.status(400).json({ message: "Food partner already exists" });
