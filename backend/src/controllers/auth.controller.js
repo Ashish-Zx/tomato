@@ -75,7 +75,7 @@ async function logoutUser(req, res) {
 
 async function registerFoodPartner(req, res) {
   try {
-    const { name, email, password, restaurantName } = req.body;
+    const { name, email, password, contactName, phone, address } = req.body;
 
     // Check if food partner already exists
     const existingPartner = await FoodPartnerModel.findOne({ email });
@@ -88,20 +88,28 @@ async function registerFoodPartner(req, res) {
       name,
       email,
       password: hashedPassword,
-      restaurantName,
+      contactName,
+      phone,
+      address,
     });
 
     const token = jwt.sign({ id: newFoodPartner._id }, process.env.JWT_SECRET);
-    res.cookie("token", token, { httpOnly: true });
+    res.cookie("token", token, {
+      httpOnly: true,
+      sameSite: 'lax'
+    });
 
     await newFoodPartner.save();
     res.status(201).json({
       message: "Food partner registered successfully",
+      token: token,
       foodPartner: {
         id: newFoodPartner._id,
         name: newFoodPartner.name,
         email: newFoodPartner.email,
-        restaurantName: newFoodPartner.restaurantName,
+        contactName: newFoodPartner.contactName,
+        phone: newFoodPartner.phone,
+        address: newFoodPartner.address,
       },
     });
   } catch (error) {
@@ -124,9 +132,13 @@ async function loginFoodPartner(req, res) {
     }
 
     const token = jwt.sign({ id: partner._id }, process.env.JWT_SECRET);
-    res.cookie("token", token, { httpOnly: true });
+    res.cookie("token", token, {
+      httpOnly: true,
+      sameSite: 'lax'
+    });
     res.status(200).json({
       message: "Login successful",
+      token: token,
       foodPartner: {
         id: partner._id,
         name: partner.name,
@@ -143,6 +155,25 @@ async function logoutFoodPartner(req, res) {
   res.clearCookie("token");
   res.status(200).json({ message: "Logout successful" });
 }
+
+async function getFoodPartnerProfile(req, res) {
+  try {
+    const foodPartner = req.foodPartner;
+    res.status(200).json({
+      foodPartner: {
+        id: foodPartner._id,
+        name: foodPartner.name,
+        email: foodPartner.email,
+        contactName: foodPartner.contactName,
+        phone: foodPartner.phone,
+        address: foodPartner.address,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
 module.exports = {
   registerUser,
   loginUser,
@@ -150,4 +181,5 @@ module.exports = {
   registerFoodPartner,
   loginFoodPartner,
   logoutFoodPartner,
+  getFoodPartnerProfile,
 };

@@ -13,7 +13,16 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
+      required: true,
     },
+    likedFoods: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Food'
+    }],
+    savedFoods: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Food'
+    }]
   },
   {
     timestamps: true,

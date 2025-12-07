@@ -4,6 +4,7 @@ const foodController = require("../controllers/food.controller");
 const {
   authFoodPartnerMiddleware,
   authUserMiddleware,
+  authEitherMiddleware,
 } = require("../middlewares/authmiddleware");
 const multer = require("multer");
 
@@ -20,4 +21,17 @@ router.post(
 
 //GET //
 router.get("/", authUserMiddleware, foodController.getFoods);
+router.get(
+  "/partner/:id",
+  authEitherMiddleware,  // Allow both users and partners
+  foodController.getFoodsByPartnerId
+);
+
+// DELETE food item
+router.delete(
+  "/:id",
+  authFoodPartnerMiddleware,
+  foodController.deleteFood
+);
+
 module.exports = router;

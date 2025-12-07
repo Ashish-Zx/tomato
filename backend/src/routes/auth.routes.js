@@ -9,7 +9,9 @@ const {
   registerFoodPartner,
   loginFoodPartner,
   logoutFoodPartner,
+  getFoodPartnerProfile,
 } = require("../controllers/auth.controller");
+const { authFoodPartnerMiddleware } = require("../middlewares/authmiddleware");
 
 //user routes
 router.post("/user/register", registerUser);
@@ -20,5 +22,10 @@ router.get("/user/logout", logoutUser);
 router.post("/foodpartner/register", registerFoodPartner);
 router.post("/foodpartner/login", loginFoodPartner);
 router.get("/foodpartner/logout", logoutFoodPartner);
+router.get(
+  "/foodpartner/profile",
+  authFoodPartnerMiddleware,
+  getFoodPartnerProfile
+);
 
 module.exports = router;

@@ -9,10 +9,18 @@ const imagekit = new Imagekit({
 });
 
 async function uploadFileToImageKit(file, fileName) {
+  // Convert buffer to base64 string for ImageKit
+  const base64File = file.toString('base64');
+
   const uploadResponse = await imagekit.upload({
-    file: file.buffer,
+    file: base64File,
     fileName: fileName,
+    useUniqueFileName: true,
+    folder: '/food-videos',
+    tags: ['food', 'video', 'with-audio']
   });
+
+  console.log('Video uploaded to ImageKit:', uploadResponse.url);
   return uploadResponse;
 }
 
