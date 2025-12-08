@@ -28,21 +28,22 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Health Check Route
+// Global DB Reconnect Middleware
 const mongoose = require('mongoose');
-app.get("/", (req, res) => {
-  const dbState = mongoose.connection.readyState;
-  const states = { 0: "disconnected", 1: "connected", 2: "connecting", 3: "disconnecting" };
+const connectDB = require("./db/db");
+let lastDbError = null; // Store error to show on frontend
 
-  res.status(200).json({
-    status: "ok",
-    message: "Tomato Backend is running",
-    db_status: states[dbState] || "unknown",
-    env_check: {
-      mongo_defined: !!process.env.MONGO_URI,
-      jwt_defined: !!process.env.JWT_SECRET
+app.use(async (req, res, next) => {
+  if (mongoose.connection.readyState === 0) {
+    try {
+      await connectDB();
+      lastDbError = null; // Clear error on success
+    } catch (e) {
+      console.error("Failed to reconnect DB:", e);
+      lastDbError = e.message; // Capture error
     }
-  });
+  }
+  next();
 });
 
 // Explicit DB Connection Test Route
@@ -66,18 +67,21 @@ app.get("/api/test-db", async (req, res) => {
   }
 });
 
-// Global DB Reconnect Middleware
-const connectDB = require("./db/db");
-app.use(async (req, res, next) => {
-  if (mongoose.connection.readyState === 0) {
-    console.log("DB disconnected, attempting reconnect...");
-    try {
-      await connectDB();
-    } catch (e) {
-      console.error("Failed to reconnect DB in middleware:", e);
+// Health Check Route
+app.get("/", (req, res) => {
+  const dbState = mongoose.connection.readyState;
+  const states = { 0: "disconnected", 1: "connected", 2: "connecting", 3: "disconnecting" };
+
+  res.status(200).json({
+    status: "ok",
+    message: "Tomato Backend is running",
+    db_status: states[dbState] || "unknown",
+    last_db_error: lastDbError,
+    env_check: {
+      mongo_defined: !!process.env.MONGO_URI,
+      jwt_defined: !!process.env.JWT_SECRET
     }
-  }
-  next();
+  });
 });
 
 app.use("/api/auth", authRoutes);
