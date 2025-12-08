@@ -58,20 +58,51 @@ const CreateFood = () => {
         }
 
         setLoading(true);
-        setMessage('');
-
-        const data = new FormData();
-        data.append('video', videoFile);
-        data.append('name', formData.name);
-        data.append('description', formData.description);
-        data.append('price', formData.price);
+        setMessage('Uploading video...');
 
         try {
-            await axios.post(import.meta.env.VITE_API_URL + '/api/food', data, {
-                withCredentials: true,
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
+            // 1. Get Authentication Parameters from Backend
+            const authResponse = await axios.get(import.meta.env.VITE_API_URL + '/api/auth/foodpartner/imagekit-auth', {
+                withCredentials: true
+            });
+            const { token, expire, signature, publicKey } = authResponse.data;
+
+            // 2. Upload Video to ImageKit directly
+            const uploadData = new FormData();
+            uploadData.append('file', videoFile);
+            uploadData.append('fileName', videoFile.name);
+            uploadData.append('publicKey', publicKey); 
+            uploadData.append('signature', signature);
+            uploadData.append('expire', expire);
+            uploadData.append('token', token);
+            uploadData.append('folder', '/food-videos');
+            uploadData.append('tags', 'food,video');
+
+            const imageKitResponse = await fetch('https://upload.imagekit.io/api/v1/files/upload', {
+                method: 'POST',
+                body: uploadData
+            });
+
+            if (!imageKitResponse.ok) {
+                const errorData = await imageKitResponse.json();
+                throw new Error('ImageKit Upload Failed: ' + errorData.message);
+            }
+
+            const imageKitResult = await imageKitResponse.json();
+            const videoUrl = imageKitResult.url;
+
+            setMessage('Creating food item...');
+
+            // 3. Send Data to Backend
+            const foodData = {
+                name: formData.name,
+                description: formData.description,
+                price: formData.price,
+                videoUrl: videoUrl // Send URL instead of file
+            };
+
+            await axios.post(import.meta.env.VITE_API_URL + '/api/food', foodData, {
+                withCredentials: true
             });
 
             setMessage('Food item created successfully!');
@@ -80,7 +111,8 @@ const CreateFood = () => {
             setVideoFile(null);
             setVideoPreview(null);
         } catch (error) {
-            setMessage('Error creating food item: ' + (error.response?.data?.message || error.message));
+            console.error(error);
+            setMessage('Error: ' + (error.response?.data?.message || error.message));
         } finally {
             setLoading(false);
         }

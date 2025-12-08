@@ -23,9 +23,15 @@ router.post("/foodpartner/register", registerFoodPartner);
 router.post("/foodpartner/login", loginFoodPartner);
 router.get("/foodpartner/logout", logoutFoodPartner);
 router.get(
-  "/foodpartner/profile",
   authFoodPartnerMiddleware,
   getFoodPartnerProfile
+);
+
+const { getFoodPartnerImageKitAuth } = require("../controllers/auth.controller");
+router.get(
+  "/foodpartner/imagekit-auth",
+  authFoodPartnerMiddleware,
+  getFoodPartnerImageKitAuth
 );
 
 module.exports = router;
