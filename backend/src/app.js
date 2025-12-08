@@ -45,6 +45,20 @@ app.get("/", (req, res) => {
   });
 });
 
+// Global DB Reconnect Middleware
+const connectDB = require("./db/db");
+app.use(async (req, res, next) => {
+  if (mongoose.connection.readyState === 0) {
+    console.log("DB disconnected, attempting reconnect...");
+    try {
+      await connectDB();
+    } catch (e) {
+      console.error("Failed to reconnect DB in middleware:", e);
+    }
+  }
+  next();
+});
+
 app.use("/api/auth", authRoutes);
 app.use("/api/food", foodAuthRoutes);
 app.use("/api/foodpartner", foodPartnerRoutes);

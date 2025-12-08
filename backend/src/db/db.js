@@ -6,7 +6,7 @@ dotenv.config();
 let isConnected = false;
 
 const connectDB = async () => {
-  if (isConnected) {
+  if (mongoose.connection.readyState >= 1) {
     console.log("Using existing MongoDB connection");
     return;
   }
