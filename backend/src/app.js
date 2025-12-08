@@ -45,6 +45,27 @@ app.get("/", (req, res) => {
   });
 });
 
+// Explicit DB Connection Test Route
+app.get("/api/test-db", async (req, res) => {
+  try {
+    const connectDB = require("./db/db");
+    await connectDB();
+    res.json({
+      status: "success",
+      message: "Successfully connected to MongoDB!",
+      state: mongoose.connection.readyState
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      message: "Failed to connect to MongoDB",
+      error_name: error.name,
+      error_message: error.message,
+      error_code: error.code
+    });
+  }
+});
+
 // Global DB Reconnect Middleware
 const connectDB = require("./db/db");
 app.use(async (req, res, next) => {
