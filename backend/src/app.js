@@ -79,7 +79,8 @@ app.get("/", (req, res) => {
     last_db_error: lastDbError,
     env_check: {
       mongo_defined: !!process.env.MONGO_URI,
-      jwt_defined: !!process.env.JWT_SECRET
+      jwt_defined: !!process.env.JWT_SECRET,
+      imagekit_defined: !!process.env.IMAGEKIT_PRIVATE_KEY
     }
   });
 });
