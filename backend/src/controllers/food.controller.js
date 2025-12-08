@@ -6,14 +6,26 @@ const { v4: uuid } = require("uuid");
 
 async function createFood(req, res) {
   try {
-    // Using ImageKit (may strip audio)
-    const fileUploadResult = await uploadFileToImageKit(
-      req.file.buffer,
-      uuid()
-    );
+    // Check if file exists
+    if (!req.file) {
+      return res.status(400).json({ message: "Video file is required" });
+    }
 
-    // ALTERNATIVE: Use local storage (preserves audio)
-    // const fileUploadResult = await uploadFileLocally(req.file.buffer, uuid());
+    // Using ImageKit (may strip audio)
+    console.log("Starting ImageKit upload...");
+    let fileUploadResult;
+    try {
+      fileUploadResult = await uploadFileToImageKit(
+        req.file.buffer,
+        uuid()
+      );
+    } catch (uploadError) {
+      console.error("ImageKit Upload Failed:", uploadError);
+      return res.status(500).json({
+        message: "Failed to upload video to ImageKit",
+        error: uploadError.message
+      });
+    }
 
     const foodItem = await foodmodel.create({
       name: req.body.name,
