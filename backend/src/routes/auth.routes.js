@@ -18,11 +18,12 @@ router.post("/user/register", registerUser);
 router.post("/user/login", loginUser);
 router.get("/user/logout", logoutUser);
 
-//food partner routes
+// food partner routes
 router.post("/foodpartner/register", registerFoodPartner);
 router.post("/foodpartner/login", loginFoodPartner);
 router.get("/foodpartner/logout", logoutFoodPartner);
 router.get(
+  "/foodpartner/profile",
   authFoodPartnerMiddleware,
   getFoodPartnerProfile
 );
